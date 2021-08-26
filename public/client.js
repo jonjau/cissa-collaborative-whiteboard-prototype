@@ -1,3 +1,4 @@
+
 // initialise socket.io
 var socket = io();
 
@@ -17,9 +18,17 @@ form.addEventListener('submit', function(e) {
 });
 
 // Socket io handle received messages
-socket.on('chat message', function(msg) {
+function appendMessageToChatHistory(msg) {
 	var item = document.createElement('li');
 	item.textContent = msg;
 	messages.appendChild(item);
 	messagesElement.scrollTop = messagesElement.scrollHeight;
+}
+socket.on('chat message', function(msg) {
+	appendMessageToChatHistory(msg);
+});
+socket.on('chat history', function(msgHistory) {
+	msgHistory.forEach(function (message, index) {
+		appendMessageToChatHistory(message);
+	})
 });

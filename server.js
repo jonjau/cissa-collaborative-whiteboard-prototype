@@ -7,10 +7,14 @@ const io = new Server(server);
 
 app.use(express.static('public'))
 
+let messages = [];
+
 io.on('connection', (socket) => {
 	console.log("New user.");
+	socket.emit('chat history', messages);
 	socket.on('chat message', (msg) => {
 		io.emit('chat message', msg); // Broadcast to all clients the chat message
+		messages.push(msg);
 	});
 });
 
