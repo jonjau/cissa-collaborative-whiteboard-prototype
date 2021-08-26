@@ -1,0 +1,8 @@
+canvas {
+	border: 2px solid black;
+}
+#messages {
+	height: 300px;
+	background-color: #eee;
+	overflow-y:scroll;
+}

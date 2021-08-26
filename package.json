@@ -1,0 +1,24 @@
+{
+  "name": "cissa-collaborative-whiteboard-prototype",
+  "version": "0.0.1",
+  "description": "A prototype for a realtime whiteboard",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/5Mixer/cissa-collaborative-whiteboard-prototype.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/5Mixer/cissa-collaborative-whiteboard-prototype/issues"
+  },
+  "homepage": "https://github.com/5Mixer/cissa-collaborative-whiteboard-prototype#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^4.1.3"
+  }
+}
