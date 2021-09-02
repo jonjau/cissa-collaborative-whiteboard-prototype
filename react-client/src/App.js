@@ -1,15 +1,14 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import './App.css';
+import logo from "./logo.gif";
 
-const Board = ({ socket, messages }) => {
+const Board = ({ socket }) => {
   // references to DOM elements to directly access them in a React component
   const whiteboardRef = useRef(null);
-  const inputRef = useRef(null);
 
   // state variables for convenience to refer to DOM elements
   const [whiteboard, setWhiteboard] = useState(null);
-  const [input, setInput] = useState(null);
 
   const [mouseDown, setMouseDown] = useState(false);
   const [previousMousePosition, setPreviousMousePosition] = useState(
@@ -21,14 +20,12 @@ const Board = ({ socket, messages }) => {
   const brushRadius = 2;
   const brushStyle = 'black';
 
-  // empty dependency array (2nd arg) means this will be run once, when
-  // component is "mounted"
+  // this will be run when/if the socket variable changes
   useEffect(() => {
     // for convenience, set as variables DOM elements pointed to by refs
     setWhiteboard(whiteboardRef.current);
-    setInput(inputRef.current);
     
-    // set up socket listeners
+    // set up socket listeners for line drawing data
     socket.on('line', (lineData) => {
       drawLine(lineData.from, lineData.to, brushRadius, brushStyle);
     });
@@ -86,15 +83,6 @@ const Board = ({ socket, messages }) => {
     setMouseDown(false);
   }
 
-  // Handle sending a chat message from the UI
-  const onSubmitForm = (e) => {
-    e.preventDefault();
-    if (input.value) {
-      socket.emit('chat message', input.value);
-      input.value = '';
-    }
-  }
-
   return (
     <>
       <canvas
@@ -107,6 +95,29 @@ const Board = ({ socket, messages }) => {
         onMouseUp={onMouseUp}
         onMouseOut={onMouseOut}
       ></canvas>
+    </>
+  );
+}
+
+const Messages = ({ socket, messages }) => {
+  const inputRef = useRef(null);
+  const [input, setInput] = useState(null);
+
+  useEffect(() => {
+    setInput(inputRef.current);
+  }, []);
+
+  // Handle sending a chat message from the UI
+  const onSubmitForm = (e) => {
+    e.preventDefault();
+    if (input.value) {
+      socket.emit('chat message', input.value);
+      input.value = '';
+    }
+  }
+
+  return (
+    <div>
       <ul id="messages">
         {messages.map((msg) => <li>{msg}</li>)}
       </ul>
@@ -114,7 +125,7 @@ const Board = ({ socket, messages }) => {
         <input id="input" autoComplete="off" ref={inputRef}/>
         <button>Send</button>
       </form>
-    </>
+    </div>
   );
 }
 
@@ -128,6 +139,8 @@ const App = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [messages, setMessages] = useState([]);
 
+  // empty dependency array (2nd arg) means this will be run once, when
+  // component is "mounted"
   useEffect(() => {
     const socket = io();
     socket.on('chat history', (msgHistory) => {
@@ -152,11 +165,14 @@ const App = () => {
 
   return (
     <div>
-      <button onClick={() => console.log(messages)}>asd</button>
+      <img src={logo} alt="logo" />
       {
-        isLoaded
-          ? <Board socket={socketRef.current} messages={messages} />
-          : <h1>Loading...</h1>
+        !isLoaded
+          ? <h1>Loading...</h1>
+          : <div className="container">
+              <Board socket={socketRef.current} />
+              <Messages socket={socketRef.current} messages={messages} />
+            </div>
       }
     </div>
   );

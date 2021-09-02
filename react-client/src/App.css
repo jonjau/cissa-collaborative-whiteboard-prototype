@@ -1,8 +1,23 @@
+body {
+	margin: 0;
+	background: url(background.png) center fixed;
+	display: flex;
+	justify-content: center;
+}
+
+.container {
+	display: flex;
+	flex-direction: row;
+}
+
 canvas {
 	border: 2px solid black;
+	background-color: white;
 }
+
 #messages {
-	height: 300px;
+	margin: 0;
+	height: 100%;
 	background-color: #eee;
-	overflow-y:scroll;
+	overflow-y: scroll;
 }
