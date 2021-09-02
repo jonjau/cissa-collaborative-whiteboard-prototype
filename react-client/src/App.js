@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import './App.css';
-import logo from "./logo.gif";
 
 const Board = ({ socket }) => {
   // references to DOM elements to directly access them in a React component
@@ -164,8 +163,7 @@ const App = () => {
   };
 
   return (
-    <div>
-      <img src={logo} alt="logo" />
+    <div className="app">
       {
         !isLoaded
           ? <h1>Loading...</h1>

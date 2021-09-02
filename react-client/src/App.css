@@ -1,8 +1,14 @@
 body {
 	margin: 0;
+	font-family: sans-serif;
+}
+
+.app {
 	background: url(background.png) center fixed;
 	display: flex;
 	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
 }
 
 .container {
@@ -16,8 +22,10 @@ canvas {
 }
 
 #messages {
-	margin: 0;
+	margin: 8px;
+	padding: 0;
 	height: 100%;
 	background-color: #eee;
+	list-style: none;
 	overflow-y: scroll;
 }
