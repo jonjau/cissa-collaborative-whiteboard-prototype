@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import './App.css';
 
-const Board = ({socket}) => {
+const Board = ({ socket, messages }) => {
   // references to DOM elements to directly access them in a React component
   const whiteboardRef = useRef(null);
   const inputRef = useRef(null);
@@ -11,7 +11,6 @@ const Board = ({socket}) => {
   const [whiteboard, setWhiteboard] = useState(null);
   const [input, setInput] = useState(null);
 
-  const [messages, setMessages] = useState([]);
   const [mouseDown, setMouseDown] = useState(false);
   const [previousMousePosition, setPreviousMousePosition] = useState(
     { x: 0, y: 0}
@@ -19,13 +18,13 @@ const Board = ({socket}) => {
   const [currentMousePosition, setCurrentMousePosition] = useState(
     { x: 0, y: 0}
   );
-  const [brushRadius, setBrushRadius] = useState(2);
-  const [brushStyle, setBrushStyle] = useState('black');
+  const brushRadius = 2;
+  const brushStyle = 'black';
 
   // empty dependency array (2nd arg) means this will be run once, when
   // component is "mounted"
   useEffect(() => {
-    // set DOM elements pointed to as variables for convenience
+    // for convenience, set as variables DOM elements pointed to by refs
     setWhiteboard(whiteboardRef.current);
     setInput(inputRef.current);
     
@@ -33,20 +32,8 @@ const Board = ({socket}) => {
     socket.on('line', (lineData) => {
       drawLine(lineData.from, lineData.to, brushRadius, brushStyle);
     });
-    socket.on('chat message', (msg) => {
-      appendMessageToChatHistory(msg);
-    });
-    socket.on('chat history', (msgHistory) => {
-      msgHistory.forEach((message, index) => {
-        appendMessageToChatHistory(message);
-      })
-    });
-  }, []);
+  }, [socket]);
   
-  const appendMessageToChatHistory = (msg) => {
-    setMessages([...messages, msg]);
-  }
-
   const drawLine = (previousPosition, currentPosition, radius, style) => {
     // get canvas context that can be used to draw on the element
     const ctx = whiteboardRef.current.getContext('2d')
@@ -132,12 +119,46 @@ const Board = ({socket}) => {
 }
 
 const App = () => {
-  // supply socket initialised a component "one level above" the Board
-  // component, to avoid multiple initialisations
-  const socket = io();
+  // supply socket initialised a component "one level above" the Board and
+  // Chatbox component, in order to be able to share the socket between them.
+  const socketRef = useRef(null);
+
+  // "global" state variables to keep throughout the entire App, can consider
+  // state management tools such as Redux or React's useContext().
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    const socket = io();
+    socket.on('chat history', (msgHistory) => {
+      setIsLoaded(true);
+      msgHistory.forEach((message, index) => {
+        appendMessageToChatHistory(message);
+      });
+    });
+
+    socket.on('chat message', (msg) => {
+      appendMessageToChatHistory(msg);
+    });
+
+    socketRef.current = socket;
+  }, []);
+
+  const appendMessageToChatHistory = (msg) => {
+    // do not do setMessage([...messages, msg])! Must define the change in
+    // terms of the previous state, i.e. in a callback
+    setMessages(messages => [...messages, msg]);
+  };
 
   return (
-    <Board socket={socket} />
+    <div>
+      <button onClick={() => console.log(messages)}>asd</button>
+      {
+        isLoaded
+          ? <Board socket={socketRef.current} messages={messages} />
+          : <h1>Loading...</h1>
+      }
+    </div>
   );
 };
 
