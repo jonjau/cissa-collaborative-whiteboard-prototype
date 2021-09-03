@@ -47,8 +47,8 @@ const Board = ({ socket }) => {
       y: currentMousePosition.y
     });
     setCurrentMousePosition({
-      x: e.clientX - whiteboard.offsetLeft,
-      y: e.clientY - whiteboard.offsetTop
+      x: e.clientX - whiteboard.getBoundingClientRect().left,
+      y: e.clientY - whiteboard.getBoundingClientRect().top
     });
   }
 
