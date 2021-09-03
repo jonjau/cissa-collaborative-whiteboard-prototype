@@ -16,7 +16,7 @@ Otherwise, you can download the code by clicking Code -> Download ZIP.
 ## Running
 Ensure that [node](https://nodejs.org/en/download/) and npm are installed. Enter the folder in the terminal, install all dependencies with `npm i` and run the server with `npm start`. Open the application in your web browser by navigating to [`localhost:8000`](http://localhost:8000).
 
-## Scaffolding explanation
+## Starter project explanation
 `server.js` in the root directory is a node js script that hosts a server. We will edit it to facilitate communication between clients.
 
 `public/client.js` is the client side script - this runs in the browser. We will so that it sends chat messages to the server, receives broadcasted chat messages from the server, and syncronises the whiteboard.
