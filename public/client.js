@@ -19,7 +19,6 @@ whiteboardElement.addEventListener("mousemove", function (e) {
 	updateMousePosition(e);
 	if (mouseDown) {
 		drawLine(previousMousePosition, currentMousePosition, brushRadius, brushStyle);
-		socket.emit('line', { from: previousMousePosition, to: currentMousePosition });
 	}
 }, false);
 whiteboardElement.addEventListener("mousedown", function (e) {
@@ -69,9 +68,6 @@ function appendMessageToChatHistory(msg) {
 	messages.appendChild(item);
 	messagesElement.scrollTop = messagesElement.scrollHeight;
 }
-socket.on('line', function(lineData) {
-	drawLine(lineData.from, lineData.to, brushRadius, brushStyle);
-});
 socket.on('chat message', function(msg) {
 	appendMessageToChatHistory(msg);
 });
