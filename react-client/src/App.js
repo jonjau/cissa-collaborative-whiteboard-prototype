@@ -24,10 +24,8 @@ const Board = ({ socket }) => {
     // for convenience, set as variables DOM elements pointed to by refs
     setWhiteboard(whiteboardRef.current);
     
-    // set up socket listeners for line drawing data
-    socket.on('line', (lineData) => {
-      drawLine(lineData.from, lineData.to, brushRadius, brushStyle);
-    });
+    // what happens when a 'line' is drawn (by others)?
+    // TODO: set up socket listeners for line drawing data
   }, [socket]);
   
   const drawLine = (previousPosition, currentPosition, radius, style) => {
@@ -42,6 +40,7 @@ const Board = ({ socket }) => {
     ctx.closePath();
   };
 
+  // Store where the mouse was and is
   const updateMousePosition = (e) => {
     setPreviousMousePosition({
       x: currentMousePosition.x,
@@ -53,6 +52,7 @@ const Board = ({ socket }) => {
     });
   }
 
+  // Handle behaviour for the canvas/whiteboard element being interacted with
   const onMouseMove = (e) => {
     updateMousePosition(e);
     if (mouseDown) {
@@ -62,10 +62,7 @@ const Board = ({ socket }) => {
         brushRadius,
         brushStyle
       );
-      socket.emit('line', {
-        from: previousMousePosition,
-        to: currentMousePosition
-      });
+      // TODO: emit an event when you move the mouse
     } 
   }
 

@@ -16,9 +16,7 @@ io.on('connection', (socket) => {
 		io.emit('chat message', msg); // Broadcast to all clients the chat message
 		messages.push(msg);
 	});
-	socket.on('line', (lineData) => {
-		io.emit('line', lineData); // Broadcast to all clients the line data
-	});
+	// TODO: what happens when the server receives a line drawing event?
 });
 
 server.listen(8000, () => {
